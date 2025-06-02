@@ -67,25 +67,28 @@ namespace ImitModelling.Core.Statistics
 
         }
 
-        public void PrintFinalReport(double simulationEndTime, int totalTellers)
+        public string[] GetReport(double simulationEndTime, int totalTellers)
         {
-            // Обновляем загрузку операторов вплоть до конца моделирования
             UpdateBusyTime(simulationEndTime);
 
-            Console.WriteLine("===== Bank Simulation Report =====");
-            Console.WriteLine($"Simulation time: {simulationEndTime:F2}");
-            Console.WriteLine($"Total customers arrived: {ArrivalCustomers}");
-            Console.WriteLine($"Total served customers: {ServedCustomers}");
+            var report = new System.Collections.Generic.List<string>();
+            report.Add("===== Bank Simulation Report =====");
+            report.Add($"Simulation time: {simulationEndTime:F2}");
+            report.Add($"Total customers arrived: {ArrivalCustomers}");
+            report.Add($"Total served customers: {ServedCustomers}");
             if (ServedCustomers > 0)
             {
-                Console.WriteLine($"Average waiting time in queue: {TotalWaitingTime / ServedCustomers:F2}");
-                Console.WriteLine($"Average time in bank: {TotalTimeInBank / ServedCustomers:F2}");
+                report.Add($"Average waiting time in queue: {TotalWaitingTime / (ServedCustomers * totalTellers):F2}");
+                report.Add($"Average time in bank: {TotalTimeInBank / (ServedCustomers * totalTellers):F2}");
             }
-            Console.WriteLine();
+            report.Add("");
+            report.Add($"Total teller-busy-time (sum over all tellers): {CumulativeBusyTime:F2}");
+            //report.Add($"Average teller utilization: {CumulativeBusyTime / (totalTellers * simulationEndTime):F4} ");
+            report.Add("==================================");
 
-            Console.WriteLine($"Total teller-busy-time (sum over all tellers): {CumulativeBusyTime:F2}");
-            Console.WriteLine($"Average teller utilization: {CumulativeBusyTime / (totalTellers * simulationEndTime):F4} ");
-            Console.WriteLine("==================================");
+            return report.ToArray();
         }
+
+
     }
 }

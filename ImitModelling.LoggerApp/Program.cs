@@ -12,13 +12,13 @@ namespace ImitModelling.LoggerApp
     {
         static void Main(string[] args)
         {
-            var sim = new Simulation(100, 1, 0.1);
+            var sim = new Simulation(100, 4, 4);
             sim.RunTick();
             while (sim.CurrentTime < 100)
             {
                 sim.RunTick();
             }
-            BankStatistics.Instance.PrintFinalReport(100, 1);
+            BankStatistics.Instance.PrintFinalReport(100, 4);
         }
 
         

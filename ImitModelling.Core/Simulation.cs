@@ -9,19 +9,13 @@ namespace Lab14
     public class Simulation
     {
         private List<Agent> agents = new List<Agent>();
-        private double stopTime;
-
-        // Очередь клиентов
         private Queue<Customer> customerQueue = new Queue<Customer>();
 
         public double CurrentTime { get; private set; } = 0.0;
 
-        public Simulation(double stopTime, int totalServices, double lambda)
+        public Simulation(int totalServices, double lambda, double lambdaServices)
         {
-            this.stopTime = stopTime;
-            //stats = new BankStatistics();
-
-            var source = new Source(this,lambda);
+            var source = new Source(this,lambda, lambdaServices);
             RegisterAgent(source);
 
             for (int i = 0; i < totalServices; i++)
@@ -36,11 +30,8 @@ namespace Lab14
             agents.Add(a);
             
         }
-        int govno = 0;
         public void EnqueueCustomer(Customer cust)
         {
-            cust.id = govno;
-            govno++;
             customerQueue.Enqueue(cust);
         }
 
@@ -53,11 +44,9 @@ namespace Lab14
         {
             for(int i = 0; i < agents.Count; i++)
             {
-                if (CurrentTime >= stopTime)
-                    break;
                 agents[i].ProcessEvent(CurrentTime);
             }
-            CurrentTime += 0.1;
+            CurrentTime += 0.5;
         }
     }
 }

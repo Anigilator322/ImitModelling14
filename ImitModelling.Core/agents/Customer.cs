@@ -5,18 +5,15 @@ namespace Lab14.Agents
 {
     public class Customer : Agent
     {
-        private readonly Random rnd;
-        private readonly double mu;
         public int id;
         public double ArrivalTime { get; }
         public double ServiceStartTime { get; private set; }
-        public bool IsServed = false;
-
+        public bool IsServing = false;
+        private PoissonDistribution poissonDistribution;
         public Customer(Simulation system, double arrivalTime, double mu = 1.0) : base(system)
         {
             ArrivalTime = arrivalTime;
-            this.mu = mu;
-            rnd = new Random();
+            poissonDistribution = new PoissonDistribution(mu);
             NextEventTime = ArrivalTime;
         }
 
@@ -25,7 +22,7 @@ namespace Lab14.Agents
             if (currentTime < NextEventTime)
                 return;
 
-            if (IsServed)
+            if (IsServing)
                 return;
 
             _system.EnqueueCustomer(this);
@@ -36,13 +33,13 @@ namespace Lab14.Agents
         {
             ServiceStartTime = currentTime;
             double serviceDuration = SampleServiceTime();
+            IsServing = true;
             NextEventTime = currentTime + serviceDuration;
         }
 
         private double SampleServiceTime()
         {
-            PoissonDistribution dist = new PoissonDistribution(mu);
-            return 1 / dist.Generate();
+            return poissonDistribution.Generate();
         }
     }
 }

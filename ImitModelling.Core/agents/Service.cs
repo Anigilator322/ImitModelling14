@@ -27,7 +27,7 @@ namespace Lab14.Agents
             if (isBusy)
             {
                 isBusy = false;
-                currentCustomer.IsServed = true;
+                currentCustomer.IsServing = true;
                 BankStatistics.Instance.RecordDeparture(currentCustomer, currentTime);
                 BankStatistics.Instance.TellerFinishesService(currentTime);
                 currentCustomer = null;
