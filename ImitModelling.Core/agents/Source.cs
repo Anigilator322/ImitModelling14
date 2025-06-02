@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ImitModelling.Core.Statistics;
+using System;
 
 namespace Lab14.Agents
 {
@@ -16,9 +17,8 @@ namespace Lab14.Agents
 
         private double SampleInterarrival()
         {
-            // Если U равномерно(0,1), то -ln(U)/lambda — экспоненциально(lambda)
-            double U = rnd.NextDouble();
-            return -Math.Log(1.0 - U) / lambda;
+            var dist = new PoissonDistribution(lambda);
+            return 1 / dist.Generate();
         }
 
 
@@ -26,11 +26,11 @@ namespace Lab14.Agents
         {
             if (currentTime < NextEventTime)
                 return;
-            double t = NextEventTime;
-            Customer newCust = new Customer(_system, t);
+            //double t = currentTime + NextEventTime;
+            Customer newCust = new Customer(_system, currentTime, 0.3);
             _system.RegisterAgent(newCust);
-
-            NextEventTime = t + SampleInterarrival();
+            BankStatistics.Instance.RecordArrival(newCust);
+            NextEventTime = currentTime + SampleInterarrival();
         }
 
     }

@@ -29,7 +29,7 @@ namespace Lab14
                 p *= _rand.NextDouble();
             }
             
-            return k - 1;
+            return k;
         }
 
     }

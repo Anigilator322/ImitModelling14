@@ -1,9 +1,5 @@
 ﻿using Lab14.Agents;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ImitModelling.Core.Statistics
 {
@@ -17,7 +13,7 @@ namespace ImitModelling.Core.Statistics
         public double CumulativeBusyTime = 0.0;
 
         public int BusyTellers = 0;
-
+        public int ArrivalCustomers = 0;
         private BankStatistics()
         {
         }
@@ -65,6 +61,12 @@ namespace ImitModelling.Core.Statistics
             TotalTimeInBank += timeInBank;
         }
 
+        public void RecordArrival(Customer cust)
+        {
+            ArrivalCustomers++;
+
+        }
+
         public void PrintFinalReport(double simulationEndTime, int totalTellers)
         {
             // Обновляем загрузку операторов вплоть до конца моделирования
@@ -72,6 +74,7 @@ namespace ImitModelling.Core.Statistics
 
             Console.WriteLine("===== Bank Simulation Report =====");
             Console.WriteLine($"Simulation time: {simulationEndTime:F2}");
+            Console.WriteLine($"Total customers arrived: {ArrivalCustomers}");
             Console.WriteLine($"Total served customers: {ServedCustomers}");
             if (ServedCustomers > 0)
             {

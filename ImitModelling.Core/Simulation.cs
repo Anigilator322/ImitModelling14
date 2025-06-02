@@ -9,9 +9,7 @@ namespace Lab14
     public class Simulation
     {
         private List<Agent> agents = new List<Agent>();
-        private PriorityQueue eventQueue;
         private double stopTime;
-        //private BankStatistics stats;
 
         // Очередь клиентов
         private Queue<Customer> customerQueue = new Queue<Customer>();
@@ -31,21 +29,18 @@ namespace Lab14
                 var service = new Service(this, i);
                 RegisterAgent(service);
             }
-
-            eventQueue = new PriorityQueue(
-                agents.Select(a => (a, a.NextEventTime)).ToDictionary(x => x.a, x => x.Item2)
-            );
         }
 
         public void RegisterAgent(Agent a)
         {
             agents.Add(a);
-            if (eventQueue != null)
-                eventQueue.Enqueue(a, a.NextEventTime);
+            
         }
-
+        int govno = 0;
         public void EnqueueCustomer(Customer cust)
         {
+            cust.id = govno;
+            govno++;
             customerQueue.Enqueue(cust);
         }
 
@@ -53,16 +48,9 @@ namespace Lab14
         {
             return customerQueue.Dequeue();
         }
-
         public int QueueCount => customerQueue.Count;
-
-        private void UpdateAgentEventTime(Agent a)
-        {
-            eventQueue.UpdateValue(a, a.NextEventTime);
-        }
         public void RunTick()
         {
-            //RebuildEventQueue();
             for(int i = 0; i < agents.Count; i++)
             {
                 if (CurrentTime >= stopTime)
@@ -71,15 +59,5 @@ namespace Lab14
             }
             CurrentTime += 0.1;
         }
-
-        private void RebuildEventQueue()
-        {
-            eventQueue = new PriorityQueue();
-            foreach (var a in agents)
-            {
-                eventQueue.Enqueue(a, a.NextEventTime);
-            }
-        }
-
     }
 }

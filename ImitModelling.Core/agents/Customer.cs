@@ -7,6 +7,7 @@ namespace Lab14.Agents
     {
         private readonly Random rnd;
         private readonly double mu;
+        public int id;
         public double ArrivalTime { get; }
         public double ServiceStartTime { get; private set; }
         public bool IsServed = false;
@@ -40,8 +41,8 @@ namespace Lab14.Agents
 
         private double SampleServiceTime()
         {
-            double U = rnd.NextDouble();
-            return -Math.Log(1.0 - U) / mu;
+            PoissonDistribution dist = new PoissonDistribution(mu);
+            return 1 / dist.Generate();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ImitModelling.Core.Statistics;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Lab14.Agents
@@ -9,6 +10,7 @@ namespace Lab14.Agents
         private readonly int _id;
         private bool isBusy = false;
         private Customer currentCustomer = null;
+        private List<Customer> customers = new List<Customer>();
 
         public Service(Simulation system, int id,double startTime = 0.0) : base(system)
         {
@@ -21,14 +23,13 @@ namespace Lab14.Agents
             if (currentTime < NextEventTime)
                 return;
 
-            double t = currentTime;
 
             if (isBusy)
             {
                 isBusy = false;
                 currentCustomer.IsServed = true;
-                BankStatistics.Instance.RecordDeparture(currentCustomer, t);
-                BankStatistics.Instance.TellerFinishesService(t);
+                BankStatistics.Instance.RecordDeparture(currentCustomer, currentTime);
+                BankStatistics.Instance.TellerFinishesService(currentTime);
                 currentCustomer = null;
             }
 
@@ -36,11 +37,11 @@ namespace Lab14.Agents
             {
                 Customer nextCust = _system.DequeueCustomer();
                 currentCustomer = nextCust;
-
-                nextCust.StartService(t);
-                NextEventTime = nextCust.NextEventTime;
+                customers.Add(nextCust);
+                nextCust.StartService(currentTime);
+                NextEventTime = currentTime + nextCust.NextEventTime;
                 isBusy = true;
-                BankStatistics.Instance.TellerStartsService(t);
+                BankStatistics.Instance.TellerStartsService(currentTime);
             }
             else
             {
