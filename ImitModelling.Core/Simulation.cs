@@ -60,11 +60,16 @@ namespace Lab14
         {
             eventQueue.UpdateValue(a, a.NextEventTime);
         }
-
         public void RunTick()
         {
-            RebuildEventQueue();
-
+            //RebuildEventQueue();
+            for(int i = 0; i < agents.Count; i++)
+            {
+                if (CurrentTime >= stopTime)
+                    break;
+                agents[i].ProcessEvent(CurrentTime);
+            }
+            CurrentTime += 0.1;
         }
 
         private void RebuildEventQueue()

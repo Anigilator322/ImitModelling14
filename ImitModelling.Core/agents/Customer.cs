@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ImitModelling.Core.Statistics;
+using System;
 
 namespace Lab14.Agents
 {
@@ -18,9 +19,12 @@ namespace Lab14.Agents
             NextEventTime = ArrivalTime;
         }
 
-        public override void ProcessEvent()
+        public override void ProcessEvent(double currentTime)
         {
-            if(IsServed)
+            if (currentTime < NextEventTime)
+                return;
+
+            if (IsServed)
                 return;
 
             _system.EnqueueCustomer(this);

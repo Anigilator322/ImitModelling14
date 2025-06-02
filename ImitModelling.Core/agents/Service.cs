@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ImitModelling.Core.Statistics;
+using System;
 using System.Threading;
 
 namespace Lab14.Agents
@@ -6,7 +7,6 @@ namespace Lab14.Agents
     public class Service : Agent
     {
         private readonly int _id;
-        //private BankStatistics stats;
         private bool isBusy = false;
         private Customer currentCustomer = null;
 
@@ -16,14 +16,19 @@ namespace Lab14.Agents
             NextEventTime = startTime;
         }
 
-        public override void ProcessEvent()
+        public override void ProcessEvent(double currentTime)
         {
-            double t = NextEventTime;
+            if (currentTime < NextEventTime)
+                return;
+
+            double t = currentTime;
 
             if (isBusy)
             {
                 isBusy = false;
                 currentCustomer.IsServed = true;
+                BankStatistics.Instance.RecordDeparture(currentCustomer, t);
+                BankStatistics.Instance.TellerFinishesService(t);
                 currentCustomer = null;
             }
 
@@ -35,7 +40,7 @@ namespace Lab14.Agents
                 nextCust.StartService(t);
                 NextEventTime = nextCust.NextEventTime;
                 isBusy = true;
-                //stats.TellerStartsService(t);
+                BankStatistics.Instance.TellerStartsService(t);
             }
             else
             {

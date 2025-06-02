@@ -11,6 +11,6 @@ namespace Lab14.Agents
             _system = system ?? throw new ArgumentNullException(nameof(system));
             NextEventTime = double.MaxValue;
         }
-        public abstract void ProcessEvent();
+        public abstract void ProcessEvent(double currentTime);
     }
 }

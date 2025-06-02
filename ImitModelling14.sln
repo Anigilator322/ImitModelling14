@@ -5,6 +5,10 @@ VisualStudioVersion = 17.12.35521.163 d17.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImitModelling14", "ImitModelling14\ImitModelling14.csproj", "{DCD1B729-9B0E-4C72-9EB1-F026244823CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImitModelling.Core", "ImitModelling.Core\ImitModelling.Core.csproj", "{A16F8768-0F8A-40D5-AE4C-0FDB54E57459}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImitModelling.LoggerApp", "ImitModelling.LoggerApp\ImitModelling.LoggerApp.csproj", "{7BC48E0E-EAAF-4C03-9331-D151E8899476}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{DCD1B729-9B0E-4C72-9EB1-F026244823CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DCD1B729-9B0E-4C72-9EB1-F026244823CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DCD1B729-9B0E-4C72-9EB1-F026244823CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A16F8768-0F8A-40D5-AE4C-0FDB54E57459}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A16F8768-0F8A-40D5-AE4C-0FDB54E57459}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A16F8768-0F8A-40D5-AE4C-0FDB54E57459}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A16F8768-0F8A-40D5-AE4C-0FDB54E57459}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7BC48E0E-EAAF-4C03-9331-D151E8899476}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7BC48E0E-EAAF-4C03-9331-D151E8899476}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7BC48E0E-EAAF-4C03-9331-D151E8899476}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7BC48E0E-EAAF-4C03-9331-D151E8899476}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

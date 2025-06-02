@@ -76,5 +76,11 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ImitModelling.Core\ImitModelling.Core.csproj">
+      <Project>{a16f8768-0f8a-40d5-ae4c-0fdb54e57459}</Project>
+      <Name>ImitModelling.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

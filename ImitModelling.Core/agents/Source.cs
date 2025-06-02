@@ -22,8 +22,10 @@ namespace Lab14.Agents
         }
 
 
-        public override void ProcessEvent()
+        public override void ProcessEvent(double currentTime) 
         {
+            if (currentTime < NextEventTime)
+                return;
             double t = NextEventTime;
             Customer newCust = new Customer(_system, t);
             _system.RegisterAgent(newCust);
