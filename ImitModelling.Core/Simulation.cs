@@ -46,7 +46,7 @@ namespace Lab14
             {
                 agents[i].ProcessEvent(CurrentTime);
             }
-            CurrentTime += 0.5;
+            CurrentTime += 1;
         }
     }
 }

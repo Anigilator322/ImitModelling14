@@ -42,7 +42,8 @@ namespace ImitModelling14
         private void Print()
         {
             listBox1.Items.Clear();
-            foreach(var a in BankStatistics.Instance.GetReport(stopTime, int.Parse(numericUpDown3.Value.ToString())))
+            listBox1.Items.Add("Current time: " + simulation.CurrentTime);
+            foreach (var a in BankStatistics.Instance.GetReport(stopTime, int.Parse(numericUpDown3.Value.ToString())))
             {
                 listBox1.Items.Add(a);
             }

@@ -39,7 +39,7 @@ namespace Lab14.Agents
                 currentCustomer = nextCust;
                 customers.Add(nextCust);
                 nextCust.StartService(currentTime);
-                NextEventTime = currentTime + nextCust.NextEventTime;
+                NextEventTime = nextCust.NextEventTime;
                 isBusy = true;
                 BankStatistics.Instance.TellerStartsService(currentTime);
             }
