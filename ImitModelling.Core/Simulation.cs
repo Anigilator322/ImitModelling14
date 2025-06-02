@@ -1,85 +1,80 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using ImitModelling.Core;
 using Lab14.Agents;
 
 namespace Lab14
 {
     public class Simulation
     {
-        private readonly List<Agent> _agents;
-        private double _currentTime;
-        private readonly double _simulationTime;
+        private List<Agent> agents = new List<Agent>();
+        private PriorityQueue eventQueue;
+        private double stopTime;
+        //private BankStatistics stats;
 
-        public Simulation(double simulationTime, double interArrivalTimeMean, double serviceTimeMean)
+        // Очередь клиентов
+        private Queue<Customer> customerQueue = new Queue<Customer>();
+
+        public double CurrentTime { get; private set; } = 0.0;
+
+        public Simulation(double stopTime, int totalServices, double lambda)
         {
-            _simulationTime = simulationTime;
-            _currentTime = 0;
-            _agents = new List<Agent>();
+            this.stopTime = stopTime;
+            //stats = new BankStatistics();
 
-            // Create and connect agents
-            var source = new Source("Source", 1.0 / interArrivalTimeMean);
-            var queue = new Queue("Queue");
-            var service = new Service("Service", 1.0 / serviceTimeMean);
-            var output = new Output("Output");
+            var source = new Source(this,lambda);
+            RegisterAgent(source);
 
-            // Connect agents through events
-            source.CustomerGenerated += customer => queue.Enqueue(customer);
-            queue.CustomerDequeued += customer => service.ProcessCustomer(customer, _currentTime);
-            service.CustomerServiced += customer => output.ProcessCustomer(customer);
-
-            // Add agents to the list
-            _agents.Add(source);
-            _agents.Add(queue);
-            _agents.Add(service);
-            _agents.Add(output);
-        }
-
-        public void Run()
-        {
-            while (_currentTime < _simulationTime)
+            for (int i = 0; i < totalServices; i++)
             {
-                // Generate new customer if it's time
-                if (_agents[0] is Source source && source.ShouldGenerateCustomer(_currentTime))
-                {
-                    source.GenerateCustomer(_currentTime);
-                }
-
-                var queue = _agents[1] as Queue;
-                var service = _agents[2] as Service;
-                if (!service.IsBusy && queue.Count > 0)
-                {
-                    var customer = queue.Dequeue();
-                    service.ProcessCustomer(customer, _currentTime);
-                }
-
-                // Advance time
-                _currentTime += 0.1;
-                System.Threading.Thread.Sleep(50);
+                var service = new Service(this, i);
+                RegisterAgent(service);
             }
 
-            while ((_agents[1] as Queue).Count > 0)
-            {
-                var queue = _agents[1] as Queue;
-                var service = _agents[2] as Service;
-                if (!service.IsBusy)
-                {
-                    var customer = queue.Dequeue();
-                    service.ProcessCustomer(customer, _currentTime);
-                }
-                _currentTime += 0.1;
-                System.Threading.Thread.Sleep(50);
-            }
-
-            PrintResults();
+            eventQueue = new PriorityQueue(
+                agents.Select(a => (a, a.NextEventTime)).ToDictionary(x => x.a, x => x.Item2)
+            );
         }
 
-        private void PrintResults()
+        public void RegisterAgent(Agent a)
         {
-            var output = _agents[3] as Output;
-            //Console.WriteLine("\nSimulation Results:");
-            //Console.WriteLine($"Total customers processed: {output.TotalProcessedCustomers}");
-            //Console.WriteLine($"Average queue time: {output.AverageQueueTime:F2}");
-            //Console.WriteLine($"Average total time: {output.AverageTotalTime:F2}");
+            agents.Add(a);
+            if (eventQueue != null)
+                eventQueue.Enqueue(a, a.NextEventTime);
         }
+
+        public void EnqueueCustomer(Customer cust)
+        {
+            customerQueue.Enqueue(cust);
+        }
+
+        public Customer DequeueCustomer()
+        {
+            return customerQueue.Dequeue();
+        }
+
+        public int QueueCount => customerQueue.Count;
+
+        private void UpdateAgentEventTime(Agent a)
+        {
+            eventQueue.UpdateValue(a, a.NextEventTime);
+        }
+
+        public void RunTick()
+        {
+            RebuildEventQueue();
+
+        }
+
+        private void RebuildEventQueue()
+        {
+            eventQueue = new PriorityQueue();
+            foreach (var a in agents)
+            {
+                eventQueue.Enqueue(a, a.NextEventTime);
+            }
+        }
+
     }
 }

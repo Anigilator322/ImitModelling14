@@ -4,31 +4,32 @@ namespace Lab14.Agents
 {
     public class Source : Agent
     {
-        private readonly PoissonDistribution _distribution;
-        private double _nextGenerationTime;
-        public event Action<Customer> CustomerGenerated;
+        private readonly double lambda;
+        private readonly Random rnd;
 
-        public Source(string name, double lambda) : base(name)
+        public Source(Simulation system, double lambda) : base(system)
         {
-            _distribution = new PoissonDistribution(lambda);
-            _nextGenerationTime = 0;
+            this.lambda = lambda;
+            rnd = new Random();
+            NextEventTime = SampleInterarrival();
         }
 
-        public bool ShouldGenerateCustomer(double currentTime)
+        private double SampleInterarrival()
         {
-            if (currentTime >= _nextGenerationTime)
-            {
-                _nextGenerationTime = currentTime + _distribution.Generate();
-                return true;
-            }
-            return false;
+            // Если U равномерно(0,1), то -ln(U)/lambda — экспоненциально(lambda)
+            double U = rnd.NextDouble();
+            return -Math.Log(1.0 - U) / lambda;
         }
 
-        public void GenerateCustomer(double currentTime)
+
+        public override void ProcessEvent()
         {
-            var customer = new Customer($"Customer_{Guid.NewGuid().ToString().Substring(0, 8)}", currentTime);
-            Console.WriteLine($"[t={currentTime:F2}] {customer.Name} arrived");
-            CustomerGenerated?.Invoke(customer);
+            double t = NextEventTime;
+            Customer newCust = new Customer(_system, t);
+            _system.RegisterAgent(newCust);
+
+            NextEventTime = t + SampleInterarrival();
         }
+
     }
 }

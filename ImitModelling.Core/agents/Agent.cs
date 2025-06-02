@@ -4,15 +4,13 @@ namespace Lab14.Agents
 {
     public abstract class Agent
     {
-        public string Name { get; set; }
-
-        public Action OnProcessed;
-
-        protected abstract void Process();
-
-        protected Agent(string name)
+        public double NextEventTime { get; set; }
+        protected readonly Simulation _system;
+        protected Agent(Simulation system)
         {
-            Name = name;
+            _system = system ?? throw new ArgumentNullException(nameof(system));
+            NextEventTime = double.MaxValue;
         }
+        public abstract void ProcessEvent();
     }
 }

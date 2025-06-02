@@ -5,30 +5,43 @@ namespace Lab14.Agents
 {
     public class Service : Agent
     {
-        private readonly PoissonDistribution _distribution;
-        private bool _isBusy;
-        public event Action<Customer> CustomerServiced;
+        private readonly int _id;
+        //private BankStatistics stats;
+        private bool isBusy = false;
+        private Customer currentCustomer = null;
 
-        public Service(string name, double lambda) : base(name)
+        public Service(Simulation system, int id,double startTime = 0.0) : base(system)
         {
-            _distribution = new PoissonDistribution(lambda);
+            _id = id;
+            NextEventTime = startTime;
         }
 
-        public void ProcessCustomer(Customer customer, double currentTime)
+        public override void ProcessEvent()
         {
-            if (_isBusy) return;
+            double t = NextEventTime;
 
-            _isBusy = true;
-            customer.ServiceStartTime = currentTime;
+            if (isBusy)
+            {
+                isBusy = false;
+                currentCustomer.IsServed = true;
+                currentCustomer = null;
+            }
 
-            var serviceDuration = _distribution.Generate();
-            customer.ServiceEndTime = currentTime + serviceDuration;
+            if (_system.QueueCount > 0)
+            {
+                Customer nextCust = _system.DequeueCustomer();
+                currentCustomer = nextCust;
 
-            Thread.Sleep(serviceDuration);
-            CustomerServiced?.Invoke(customer);
-            _isBusy = false;
+                nextCust.StartService(t);
+                NextEventTime = nextCust.NextEventTime;
+                isBusy = true;
+                //stats.TellerStartsService(t);
+            }
+            else
+            {
+                NextEventTime = 0.0;
+            }
+
         }
-
-        public bool IsBusy => _isBusy;
     }
 }
