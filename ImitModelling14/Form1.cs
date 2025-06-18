@@ -27,7 +27,7 @@ namespace ImitModelling14
             }
 
 
-            simulation = new Simulation(timer1.Interval / 1000.0,
+            simulation = new Simulation(
                 int.Parse(numericUpDown3.Value.ToString()),
                 double.Parse(numericUpDown1.Value.ToString()), 
                 double.Parse(numericUpDown2.Value.ToString()));
@@ -45,6 +45,7 @@ namespace ImitModelling14
         private void Print()
         {
             listBox1.Items.Clear();
+            listBox1.Items.Add("Current Action: " + simulation.CurrentTime.ToString());
             foreach(var a in BankStatistics.Instance.GetReport(int.Parse(numericUpDown3.Value.ToString())))
             {
                 listBox1.Items.Add(a);

@@ -6,13 +6,14 @@ namespace Lab14.Agents
     public class Customer : Agent
     {
         public int id;
-        public double ArrivalTime { get; }
+        public double ArrivalTime { get; set; }
         public double ServiceStartTime { get; private set; }
         public bool IsServing = false;
         private PoissonDistribution poissonDistribution;
         public Customer(Simulation system, double mu = 1.0) : base(system)
         {
             poissonDistribution = new PoissonDistribution(mu);
+            ArrivalTime = _system.CurrentTime;
         }
 
         public override void ProcessEvent()
@@ -26,6 +27,7 @@ namespace Lab14.Agents
 
         public double StartService()
         {
+            ServiceStartTime = _system.CurrentTime;
             double serviceDuration = SampleServiceTime();
             IsServing = true;
             return serviceDuration;

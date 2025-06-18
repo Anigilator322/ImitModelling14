@@ -24,8 +24,8 @@ namespace Lab14.Agents
             {
                 isBusy = false;
                 currentCustomer.IsServing = true;
-                BankStatistics.Instance.RecordDeparture(currentCustomer, NextEventTime);
-                BankStatistics.Instance.TellerFinishesService(NextEventTime);
+                BankStatistics.Instance.RecordDeparture(currentCustomer, _system.CurrentTime);
+                BankStatistics.Instance.TellerFinishesService(_system.CurrentTime);
                 currentCustomer = null;
             }
 
@@ -34,7 +34,7 @@ namespace Lab14.Agents
                 var nextCust = _system.DequeueCustomer();
                 currentCustomer = nextCust;
                 NextEventTime = nextCust.StartService();
-                BankStatistics.Instance.TellerStartsService(NextEventTime);
+                BankStatistics.Instance.TellerStartsService(_system.CurrentTime);
                 isBusy = true;
             }
             else

@@ -81,7 +81,6 @@ namespace ImitModelling.Core.Statistics
                 report.Add($"Average waiting time in queue: {TotalWaitingTime / (ServedCustomers * totalTellers):F2}");
                 report.Add($"Average time in bank: {TotalTimeInBank / (ServedCustomers * totalTellers):F2}");
             }
-            report.Add($"Total teller-busy-time (sum over all tellers): {CumulativeBusyTime:F2}");
             report.Add("==================================");
 
             return report.ToArray();

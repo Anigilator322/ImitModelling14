@@ -12,7 +12,7 @@ namespace ImitModelling.LoggerApp
     {
         static void Main(string[] args)
         {
-            var sim = new Simulation(0.5, 1, 0.1, 0.1);
+            var sim = new Simulation(1, 0.1, 0.1);
             sim.RunTick();
             while (sim.CurrentTime < 100)
             {

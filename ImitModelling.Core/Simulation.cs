@@ -8,15 +8,13 @@ namespace Lab14
 {
     public class Simulation
     {
-        private readonly double _deltaTime;
         private List<Agent> agents = new List<Agent>();
         private Queue<Customer> customerQueue = new Queue<Customer>();
 
         public double CurrentTime { get; private set; } = 0.0;
 
-        public Simulation(double deltaTime, int totalServices, double lambda, double lambdaServices)
+        public Simulation(int totalServices, double lambda, double lambdaServices)
         {
-            _deltaTime = deltaTime;
             var source = new Source(this,lambda, lambdaServices);
             RegisterAgent(source);
 
@@ -46,9 +44,8 @@ namespace Lab14
         public void RunTick()
         {
             var nextAgent = agents.OrderByDescending(x => x.NextEventTime).Last();
-            
+            CurrentTime += nextAgent.NextEventTime;
             nextAgent.ProcessEvent();
-            CurrentTime += 0.1;
         }
     }
 }
