@@ -12,40 +12,34 @@ namespace Lab14.Agents
         private Customer currentCustomer = null;
         private List<Customer> customers = new List<Customer>();
 
-        public Service(Simulation system, int id,double startTime = 0.0) : base(system)
+        public Service(Simulation system, int id) : base(system)
         {
             _id = id;
-            NextEventTime = startTime;
+            NextEventTime = Double.PositiveInfinity;
         }
 
-        public override void ProcessEvent(double currentTime)
+        public override void ProcessEvent()
         {
-            if (currentTime < NextEventTime)
-                return;
-
-
             if (isBusy)
             {
                 isBusy = false;
                 currentCustomer.IsServing = true;
-                BankStatistics.Instance.RecordDeparture(currentCustomer, currentTime);
-                BankStatistics.Instance.TellerFinishesService(currentTime);
+                BankStatistics.Instance.RecordDeparture(currentCustomer, NextEventTime);
+                BankStatistics.Instance.TellerFinishesService(NextEventTime);
                 currentCustomer = null;
             }
 
             if (_system.QueueCount > 0)
             {
-                Customer nextCust = _system.DequeueCustomer();
+                var nextCust = _system.DequeueCustomer();
                 currentCustomer = nextCust;
-                customers.Add(nextCust);
-                nextCust.StartService(currentTime);
-                NextEventTime = nextCust.NextEventTime;
+                NextEventTime = nextCust.StartService();
+                BankStatistics.Instance.TellerStartsService(NextEventTime);
                 isBusy = true;
-                BankStatistics.Instance.TellerStartsService(currentTime);
             }
             else
             {
-                NextEventTime = 0.0;
+                NextEventTime = double.PositiveInfinity;
             }
 
         }

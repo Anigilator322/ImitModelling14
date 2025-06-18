@@ -9,8 +9,7 @@ namespace Lab14.Agents
         protected Agent(Simulation system)
         {
             _system = system ?? throw new ArgumentNullException(nameof(system));
-            NextEventTime = double.MaxValue;
         }
-        public abstract void ProcessEvent(double currentTime);
+        public abstract void ProcessEvent();
     }
 }

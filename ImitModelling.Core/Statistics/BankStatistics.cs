@@ -1,5 +1,6 @@
 ﻿using Lab14.Agents;
 using System;
+using System.Collections.Generic;
 
 namespace ImitModelling.Core.Statistics
 {
@@ -67,28 +68,36 @@ namespace ImitModelling.Core.Statistics
 
         }
 
-        public string[] GetReport(double simulationEndTime, int totalTellers)
+        public string[] GetReport(int totalTellers)
         {
-            UpdateBusyTime(simulationEndTime);
-
-            var report = new System.Collections.Generic.List<string>();
-            report.Add("===== Bank Simulation Report =====");
-            report.Add($"Simulation time: {simulationEndTime:F2}");
-            report.Add($"Total customers arrived: {ArrivalCustomers}");
-            report.Add($"Total served customers: {ServedCustomers}");
+            var report = new List<string>
+            {
+                "===== Bank Simulation Report =====",
+                $"Total customers arrived: {ArrivalCustomers}",
+                $"Total served customers: {ServedCustomers}"
+            };
             if (ServedCustomers > 0)
             {
                 report.Add($"Average waiting time in queue: {TotalWaitingTime / (ServedCustomers * totalTellers):F2}");
                 report.Add($"Average time in bank: {TotalTimeInBank / (ServedCustomers * totalTellers):F2}");
             }
-            report.Add("");
             report.Add($"Total teller-busy-time (sum over all tellers): {CumulativeBusyTime:F2}");
-            //report.Add($"Average teller utilization: {CumulativeBusyTime / (totalTellers * simulationEndTime):F4} ");
             report.Add("==================================");
 
             return report.ToArray();
         }
 
+        public void ClearReport()
+        {
+            TotalWaitingTime = 0.0;
+            TotalTimeInBank = 0.0;
+            ServedCustomers = 0;
 
+            lastUpdateTime = 0.0;
+            CumulativeBusyTime = 0.0;
+
+            BusyTellers = 0;
+            ArrivalCustomers = 0;
+        }
     }
 }

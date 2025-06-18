@@ -5,6 +5,7 @@ namespace Lab14.Agents
 {
     public class Source : Agent
     {
+        public event Action Notify;
         private PoissonDistribution poissonDistribution;
         private double lambdaForCustomer;
         public Source(Simulation system, double lambda, double lambda2) : base(system)
@@ -20,14 +21,13 @@ namespace Lab14.Agents
         }
 
 
-        public override void ProcessEvent(double currentTime) 
+        public override void ProcessEvent() 
         {
-            if (currentTime < NextEventTime)
-                return;
-            Customer newCust = new Customer(_system, currentTime, lambdaForCustomer);
+            Customer newCust = new Customer(_system, lambdaForCustomer);
             _system.RegisterAgent(newCust);
             BankStatistics.Instance.RecordArrival(newCust);
-            NextEventTime = currentTime + SampleInterarrival();
+            NextEventTime = SampleInterarrival();
+            Notify.Invoke();
         }
 
     }

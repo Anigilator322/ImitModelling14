@@ -10,18 +10,13 @@ namespace Lab14.Agents
         public double ServiceStartTime { get; private set; }
         public bool IsServing = false;
         private PoissonDistribution poissonDistribution;
-        public Customer(Simulation system, double arrivalTime, double mu = 1.0) : base(system)
+        public Customer(Simulation system, double mu = 1.0) : base(system)
         {
-            ArrivalTime = arrivalTime;
             poissonDistribution = new PoissonDistribution(mu);
-            NextEventTime = ArrivalTime;
         }
 
-        public override void ProcessEvent(double currentTime)
+        public override void ProcessEvent()
         {
-            if (currentTime < NextEventTime)
-                return;
-
             if (IsServing)
                 return;
 
@@ -29,12 +24,11 @@ namespace Lab14.Agents
             NextEventTime = Double.PositiveInfinity;
         }
 
-        public void StartService(double currentTime)
+        public double StartService()
         {
-            ServiceStartTime = currentTime;
             double serviceDuration = SampleServiceTime();
             IsServing = true;
-            NextEventTime = currentTime + serviceDuration;
+            return serviceDuration;
         }
 
         private double SampleServiceTime()

@@ -8,33 +8,36 @@ namespace ImitModelling14
     public partial class Form1 : Form
     {
         private Simulation simulation;
-        private double stopTime;
         public Form1()
         {
             InitializeComponent();
+            
+            timer1.Interval = 500;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            if (timer1.Enabled)
+            {
+                timer1.Stop();
+                BankStatistics.Instance.ClearReport();
+                listBox1.Items.Clear();
+                button1.Text = "Simulate";
+                return;
+            }
 
-            simulation = new Simulation(int.Parse(numericUpDown3.Value.ToString()),
+
+            simulation = new Simulation(timer1.Interval / 1000.0,
+                int.Parse(numericUpDown3.Value.ToString()),
                 double.Parse(numericUpDown1.Value.ToString()), 
                 double.Parse(numericUpDown2.Value.ToString()));
-            stopTime = double.Parse(numericUpDown4.Value.ToString());
-            timer1.Interval = 500;
-            timer1.Start();
             
+            timer1.Start();
+            button1.Text = "Stop";
         }
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if(simulation.CurrentTime >= stopTime)
-            {
-                timer1.Stop();
-                Print();
-                //MessageBox.Show("Simulation finished at time: " + simulation.CurrentTime);
-                return;
-            }
             Print();
             simulation.RunTick();
         }
@@ -42,8 +45,7 @@ namespace ImitModelling14
         private void Print()
         {
             listBox1.Items.Clear();
-            listBox1.Items.Add("Current time: " + simulation.CurrentTime);
-            foreach (var a in BankStatistics.Instance.GetReport(stopTime, int.Parse(numericUpDown3.Value.ToString())))
+            foreach(var a in BankStatistics.Instance.GetReport(int.Parse(numericUpDown3.Value.ToString())))
             {
                 listBox1.Items.Add(a);
             }
